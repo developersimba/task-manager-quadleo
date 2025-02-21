@@ -29,7 +29,7 @@ const Dashboard = () => {
               <Link to="/login" className="text-lg hover:text-indigo-300">Login</Link>
             </li>
             <li className="mb-4">
-              <Link onClick={()=> logout}  className="text-lg hover:text-indigo-300">Logout</Link>
+              <Link onClick={()=> logout()}  className="text-lg hover:text-indigo-300">Logout</Link>
             </li>
           </ul>
         </div>
