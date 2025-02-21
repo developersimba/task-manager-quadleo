@@ -1,7 +1,5 @@
-// src/components/Dashboard.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import { logout } from '../redux/authSlice';
 
 const Dashboard = () => {
 
@@ -25,12 +23,12 @@ const Dashboard = () => {
             <li className="mb-4">
               <Link to="/register" className="text-lg hover:text-indigo-300">Register</Link>
             </li>
-            <li className="mb-4">
+            {!localStorage.getItem("token") ? <li className="mb-4">
               <Link to="/login" className="text-lg hover:text-indigo-300">Login</Link>
             </li>
-            <li className="mb-4">
+            : <li className="mb-4">
               <Link onClick={()=> logout()}  className="text-lg hover:text-indigo-300">Logout</Link>
-            </li>
+            </li>}
           </ul>
         </div>
       </div>
