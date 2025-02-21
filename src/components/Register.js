@@ -1,99 +1,109 @@
 // src/components/Register.js
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { registerUser } from '../api'; // Your API utility to handle registration
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../api'; // Assuming you have an API utility for registration
 
 const Register = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // Function to handle registration
-  const handleRegister = async () => {
-    setError(''); // Clear previous error message
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-    // Validate form data
-    if (!email || !password) {
-      setError('All fields are required.');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      setLoading(false);
       return;
     }
-
-    // Basic email validation
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
-
-    // Password validation
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
-      return;
-    }
-
-    // Prepare data for API call
-    const registrationData = {
-      email,
-      password,
-    };
 
     try {
-      const response = await registerUser(registrationData);
-      console.log('Registration successful:', response.data);
-
-      // Redirect to login page after successful registration
-      navigate('/login');
+      const response = await registerUser({ email, password }); // Assuming you have this API function
+      if (response.status === 201) {
+        // Successful registration logic (navigate to login, etc.)
+        navigate('/login');
+      }
     } catch (err) {
-      console.error('Registration failed:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'An error occurred during registration.');
+      setError('Failed to register. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-600 via-pink-500 to-red-500">
-      <div className="bg-white p-12 rounded-xl shadow-2xl w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Create an Account</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 dark:bg-gradient-to-r dark:from-blue-800 dark:to-purple-900">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+        <h2 className="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-6">Register</h2>
 
-        {/* Error Message */}
+        {/* Error message */}
         {error && (
           <div className="bg-red-500 text-white p-2 rounded mb-4 text-center">
             {error}
           </div>
         )}
 
-        {/* Registration Form */}
-        <div className="space-y-6">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300"
-          />
-        </div>
+        <form onSubmit={handleRegister}>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-gray-700 dark:text-gray-200">Email</label>
+            <input
+              type="email"
+              id="email"
+              className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <button
-          onClick={handleRegister}
-          className="w-full py-3 mt-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300"
-        >
-          Register
-        </button>
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-gray-700 dark:text-gray-200">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="mt-6 text-center text-gray-600">
-          <p className="text-sm">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-600 hover:text-indigo-800">
-              Login
-            </Link>
-          </p>
-        </div>
+          <div className="mb-6">
+            <label htmlFor="confirmPassword" className="block text-gray-700 dark:text-gray-200">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition duration-300"
+            disabled={loading}
+          >
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Already have an account?{' '}
+              <a href="/login" className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
+                Login here
+              </a>
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   );
