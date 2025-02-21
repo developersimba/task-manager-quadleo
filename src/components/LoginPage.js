@@ -1,6 +1,6 @@
 // src/components/Login.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../api'; // Assuming your API utility function for login
 
 const Login = () => {
@@ -18,8 +18,9 @@ const Login = () => {
     try {
       const response = await loginUser({ email, password }); // Assuming you have this API function
       if (response.status === 200) {
+        localStorage.setItem("token",response.data.token)
         // Successful login logic (store token, navigate to dashboard, etc.)
-        navigate('/dashboard');
+        navigate('/');
       }
     } catch (err) {
       setError('Invalid credentials. Please try again.');
@@ -78,9 +79,9 @@ const Login = () => {
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-300">
               Don't have an account?{' '}
-              <a href="/register" className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
+              <Link to="/register" className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
                 Register here
-              </a>
+              </Link>
             </p>
           </div>
         </form>

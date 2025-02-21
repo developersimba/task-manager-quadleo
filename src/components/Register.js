@@ -1,6 +1,6 @@
 // src/components/Register.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../api'; // Assuming you have an API utility for registration
 
 const Register = () => {
@@ -74,18 +74,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-gray-700 dark:text-gray-200">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </div>
+          
 
           <button
             type="submit"
@@ -98,9 +87,9 @@ const Register = () => {
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-300">
               Already have an account?{' '}
-              <a href="/login" className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
+              <Link to="/login" className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">
                 Login here
-              </a>
+              </Link>
             </p>
           </div>
         </form>
